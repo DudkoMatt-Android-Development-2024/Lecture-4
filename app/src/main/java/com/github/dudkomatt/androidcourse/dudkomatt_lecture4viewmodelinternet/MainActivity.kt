@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.ui.theme.DudkoMattLecture4ViewModelInternetTheme
 
+// Inspired by https://developer.android.com/courses/pathways/android-basics-compose-unit-5-pathway-1
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

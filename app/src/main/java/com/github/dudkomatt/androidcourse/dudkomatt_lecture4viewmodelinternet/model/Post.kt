@@ -1,0 +1,11 @@
+package com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Post (
+    val userId: Int,
+    val id: Int,
+    val title: String,
+    val body: String,
+)

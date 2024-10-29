@@ -11,35 +11,39 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.PostsApplication
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.data.JsonPlaceholderRepository
+import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.model.Comment
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.model.Post
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-sealed interface PostsUiState {
-    data class Success(val posts: List<Post>) : PostsUiState
-    object Error : PostsUiState
-    object Loading : PostsUiState
+sealed interface HomeUiState {
+    object Loading : HomeUiState
+    object Error : HomeUiState
+    data class Success(val posts: List<Post>, val comments: List<Comment>) : HomeUiState
 }
 
-class PostsViewModel(private val jsonPlaceholderRepository: JsonPlaceholderRepository) :
+class MainViewModel(private val jsonPlaceholderRepository: JsonPlaceholderRepository) :
     ViewModel() {
-    var postsUiState: PostsUiState by mutableStateOf(PostsUiState.Loading)
+    var homeUiState: HomeUiState by mutableStateOf(HomeUiState.Loading)
         private set
 
     init {
-        getPosts()
+        refresh()
     }
 
-    fun getPosts() {
+    fun refresh() {
         viewModelScope.launch {
-            postsUiState = PostsUiState.Loading
-            postsUiState = try {
-                PostsUiState.Success(jsonPlaceholderRepository.getPosts())
+            homeUiState = HomeUiState.Loading
+            homeUiState = try {
+                HomeUiState.Success(
+                    jsonPlaceholderRepository.getPosts(),
+                    jsonPlaceholderRepository.getComments()
+                )
             } catch (_: IOException) {
-                PostsUiState.Error
+                HomeUiState.Error
             } catch (_: HttpException) {
-                PostsUiState.Error
+                HomeUiState.Error
             }
         }
     }
@@ -49,14 +53,8 @@ class PostsViewModel(private val jsonPlaceholderRepository: JsonPlaceholderRepos
             initializer {
                 val application = (this[APPLICATION_KEY] as PostsApplication)
                 val jsonPlaceholderRepository = application.container.jsonPlaceholderRepository
-                PostsViewModel(jsonPlaceholderRepository = jsonPlaceholderRepository)
+                MainViewModel(jsonPlaceholderRepository = jsonPlaceholderRepository)
             }
         }
     }
 }
-
-//data class PostsUIState(
-//    val posts: List<Post> = emptyList(),
-//    val loading: Boolean = false,
-//    val error: String? = null,
-//)

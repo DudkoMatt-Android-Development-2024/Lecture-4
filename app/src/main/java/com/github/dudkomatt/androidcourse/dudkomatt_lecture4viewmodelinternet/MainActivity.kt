@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.ui.PostsApp
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.ui.theme.DudkoMattLecture4ViewModelInternetTheme
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.viewmodel.MainViewModel
@@ -18,9 +20,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DudkoMattLecture4ViewModelInternetTheme {
+                val uiState by vm.uiState.collectAsState()
                 PostsApp(
-                    uiState = vm.homeUiState,
-                    refreshFunction = vm::refresh
+                    uiState = uiState,
+                    refreshFunction = vm::refresh,
+                    closePostDetailsFunction = vm::closePostDetails,
+                    postSelectedFunction = vm::openPostDetails
                 )
             }
         }

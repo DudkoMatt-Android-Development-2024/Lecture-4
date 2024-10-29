@@ -7,36 +7,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.model.Post
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.R
+import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.model.Post
 
 @Composable
 fun HomeScreen(
-    posts: List<Post>
+    posts: List<Post>,
+    postSelectedFunction: (Int) -> Unit
 ) {
-    Surface {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(posts, key = Post::id) {
-                PostRow(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    post = it
-                )
-            }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(posts, key = Post::id) {
+            PostRow(
+                modifier = Modifier
+                    .padding(16.dp),
+                post = it,
+                postSelectedFunction = postSelectedFunction
+            )
         }
     }
 }
@@ -44,7 +44,8 @@ fun HomeScreen(
 @Composable
 fun PostRow(
     post: Post,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    postSelectedFunction: (Int) -> Unit
 ) {
     val commonPadding = PaddingValues(8.dp)
 
@@ -52,14 +53,15 @@ fun PostRow(
         modifier = modifier,
         tonalElevation = 16.dp,
         shadowElevation = 8.dp,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface),
+        onClick = { postSelectedFunction(post.id) }
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 modifier = Modifier.padding(commonPadding),
-                text = "Post #${post.id}",
+                text = stringResource(R.string.post_id, post.id),
                 textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -80,7 +82,7 @@ fun PostRow(
                 modifier = Modifier.padding(commonPadding),
                 text = post.body,
                 textAlign = TextAlign.Start,
-                maxLines = 3,
+                maxLines = 6,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -90,7 +92,7 @@ fun PostRow(
 @Preview(showBackground = true)
 @Composable
 fun PostRowPreview() {
-    PostRow(Post(1, 2, "Title", "Body"))
+    PostRow(Post(1, 2, "Title", "Body")) {}
 }
 
 @Preview(showBackground = true)
@@ -110,7 +112,7 @@ fun PostRowLongTextPreview() {
                     "Ipsum passages, and more recently with desktop publishing software like " +
                     "Aldus PageMaker including versions of Lorem Ipsum."
         )
-    )
+    ) {}
 }
 
 @Preview(showBackground = true)
@@ -120,5 +122,5 @@ fun HomeScreenPreview() {
         List(20) { idx ->
             Post(idx, idx, "Title $idx", "Body $idx")
         }
-    )
+    ) {}
 }

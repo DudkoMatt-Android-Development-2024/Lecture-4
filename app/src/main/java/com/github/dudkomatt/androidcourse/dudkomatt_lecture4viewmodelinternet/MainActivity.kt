@@ -4,45 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.viewModels
+import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.ui.PostsApp
 import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.ui.theme.DudkoMattLecture4ViewModelInternetTheme
+import com.github.dudkomatt.androidcourse.dudkomatt_lecture4viewmodelinternet.viewmodel.PostsViewModel
 
 // Inspired by https://developer.android.com/courses/pathways/android-basics-compose-unit-5-pathway-1
 class MainActivity : ComponentActivity() {
+    private val vm: PostsViewModel by viewModels<PostsViewModel>(factoryProducer = { PostsViewModel.Factory })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             DudkoMattLecture4ViewModelInternetTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                PostsApp(vm)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    DudkoMattLecture4ViewModelInternetTheme {
-        Greeting("Android")
     }
 }
